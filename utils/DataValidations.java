@@ -24,7 +24,7 @@ public class DataValidations {
 
             if (input.isEmpty()) {
                 System.out.println("Error: Tracking Number cannot be empty.");
-            } else if (!input.matches("^ABC//d{4}$")){
+            } else if (!input.matches("^ABC\\d{4}$")){
                 System.out.println("Error: Tracking Number must only contain alphanumeric"); //Fix, clarify if 3 alpha(a-z) or abc
             }
             else if (trackingNumberExists(input, parcels)) {
@@ -86,8 +86,8 @@ public class DataValidations {
 
             if (input.isEmpty()) {
                 System.out.println("Error: Item Name cannot be empty.");
-            } else if (!input.matches("^[\\p{L}']+([\\- ]?[\\p{L}']+)*{2,50}$")) { //double check if appropriate
-                System.out.println("Error: Item Name must be 2-50 characters (letters, numbers, spaces, and . , ' - # allowed).");
+            } else if (!input.matches("^[\\p{L}][\\p{L} .'-]{0,49}$")) { //double check if appropriate
+                System.out.println("Error: Name must be up to 50 characters (letters, spaces, . ' - only).");
             } else {
                 isValidated = true;
             }
@@ -100,10 +100,10 @@ public class DataValidations {
         double value = 0;
 
         while (!isValidated) {
-            System.out.print("Weight: ");
+            System.out.print("Weight (kg): ");
             String input = sc.nextLine().trim();
 
-            if (!input.matches("([1-9][0-9]*)(\\.[0-9]{1,2})?")) {
+            if (!input.matches("\\d+(\\.\\d+)?")) {
                 System.out.println("Error: Please enter a valid number (e.g., 25.20, 50.59).");
                 continue;
             }
