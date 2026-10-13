@@ -3,10 +3,15 @@ package model;
 import exception.InvalidInputException;
 
 public class Fragile extends Box {
-    private String note;
+    private final String handlingNote;
 
-    public Fragile(String trackingNumber, String receiverName, double weight, int length, int width, int height) throws InvalidInputException {
+    public Fragile(String trackingNumber, String receiverName, double weight, int length, int width, int height, String handlingNote) throws InvalidInputException {
         super(trackingNumber, receiverName, weight, length, width, height);
+        this.handlingNote = handlingNote;
+    }
+
+    public String getHandlingNote() {
+        return handlingNote;
     }
 
     @Override

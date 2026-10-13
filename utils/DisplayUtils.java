@@ -1,10 +1,13 @@
 package utils;
 
-import java.util.ArrayList;
+import model.Parcel;
+
+import java.util.Collection;
 
 public class DisplayUtils {
     public static final int TABLE_WIDTH = 100;
     public static final int MENU_WIDTH = 40;
+    private static final String PARCEL_FORMAT = "%-11s | %-8s | %-16s | %-12s | %-9s | %-14s | %-9s%n";
 
     private static void centeredTitle(String tableName, int width) {
         System.out.println("=".repeat(width));
@@ -13,63 +16,40 @@ public class DisplayUtils {
         System.out.println("=".repeat(width));
     }
 
-    public static void tableHeader(String tableName, boolean showCategory) {
+    public static void tableHeader(String tableName) {
         centeredTitle(tableName, TABLE_WIDTH);
 
-        if (showCategory) {
-            System.out.printf(
-                    "%-10s | %-30s | %-15s | %-15s | %-15s%n",
-                    "ID", "Name", "Quantity", "Price", "Category"
-            );
-        } else {
-            System.out.printf(
-                    "%-10s | %-30s | %-15s | %-15s%n",
-                    "ID", "Name", "Quantity", "Price"
-            );
-        }
+        System.out.printf(
+                PARCEL_FORMAT,
+                "Tracking No", "Type", "Receiver",
+                "Chg. Weight", "Service",
+                "Delivery Fee", "Status"
+        );
 
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayAllItemsTable(ArrayList<Item> items) {
-        if (items.isEmpty()) {
+    public static void displayTable(Collection<Parcel> parcels) {
+        if (parcels.isEmpty()) {
             System.out.println("No items found.");
             System.out.println("-".repeat(TABLE_WIDTH));
             return;
         }
 
-        for (Item item : items) {
+        for (Parcel parcel : parcels) {
             System.out.printf(
-                    "%-10s | %-30s | %-15d | %-15s | %-15s%n",
-                    item.getItemID(),
-                    item.getItemName(),
-                    item.getItemQuantity(),
-                    String.format("Php %,.2f", item.getItemPrice()),
-                    item.getCategory()
+                    PARCEL_FORMAT,
+                    parcel.getTrackingNumber(),
+                    parcel.getParcelType(),
+                    parcel.getReceiverName(),
+                    String.format("%d kg", (int) Math.ceil(parcel.getChargeableWeight())),
+                    parcel.getDeliveryStrategy().getName(),
+                    String.format("Php %,.2f", parcel.getDeliveryFee()),
+                    parcel.getParcelStatus()
             );
-        }
 
-        System.out.println("-".repeat(TABLE_WIDTH));
-    }
-
-    public static void displayCategoryTable(ArrayList<Item> items) {
-        if (items.isEmpty()) {
-            System.out.println("No items found.");
             System.out.println("-".repeat(TABLE_WIDTH));
-            return;
         }
-
-        for (Item item : items) {
-            System.out.printf(
-                    "%-10s | %-30s | %-15d | %-15s%n",
-                    item.getItemID(),
-                    item.getItemName(),
-                    item.getItemQuantity(),
-                    String.format("Php %,.2f", item.getItemPrice())
-            );
-        }
-
-        System.out.println("-".repeat(TABLE_WIDTH));
     }
 
     public static void printSummaryBox(String tableName, String[][] rows) {
