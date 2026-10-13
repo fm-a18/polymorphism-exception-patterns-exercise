@@ -1,11 +1,12 @@
 package utils;
 
+import model.Parcel;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DataValidations {
-    public static final int MAX_QUANTITY = 10_000;
-    public static final double MAX_PRICE = 1_000_000;
+    public static final double MAX_WEIGHT = 70; //check if 60-70kg
     public static Scanner sc = new Scanner(System.in);
 
     public static String validateTrackingNumber(ArrayList<Parcel> parcels) {
@@ -22,9 +23,12 @@ public class DataValidations {
             }
 
             if (input.isEmpty()) {
-                System.out.println("Error: Item ID cannot be empty.");
-            } else if (itemIDExists(input, parcels)) {
-                System.out.println("Error: Item ID already exists.");
+                System.out.println("Error: Tracking Number cannot be empty.");
+            } else if (!input.matches("^ABC//d{4}$")){
+                System.out.println("Error: Tracking Number must only contain alphanumeric"); //Fix, clarify if 3 alpha(a-z) or abc
+            }
+            else if (trackingNumberExists(input, parcels)) {
+                System.out.println("Error: Tracking Number already exists.");
             } else {
                 isValidated = true;
             }
@@ -32,10 +36,10 @@ public class DataValidations {
         return input;
     }
 
-    public static boolean transactionNumberExists(String transactionNumber, ArrayList<Parcel> parcels) {
+    public static boolean trackingNumberExists(String trackingNumber, ArrayList<Parcel> parcels) {
         boolean found = false;
         for (Parcel parcel : parcels) {
-            if (parcel.getTransactionNumber().equalsIgnoreCase(transactionNumber)) {
+            if (parcel.getTrackingNumber().equalsIgnoreCase(trackingNumber)) {
                 found = true;
                 break;
             }
@@ -43,31 +47,31 @@ public class DataValidations {
         return found;
     }
 
-    public static String validateItemID() {
-        boolean isValidated = false;
-        String input = "";
+//    public static String validateItemID() {
+//        boolean isValidated = false;
+//        String input = "";
+//
+//        while (!isValidated) {
+//            System.out.print("Item ID: ");
+//            try {
+//                input = sc.nextLine().trim().toUpperCase();
+//            } catch (java.util.NoSuchElementException e) {
+//                System.out.println("Error: No input available. Please try again.");
+//                continue;
+//            }
+//
+//            if (input.isEmpty()) {
+//                System.out.println("Error: Item ID cannot be empty.");
+//            } else if (!input.matches("^(CL|EL|EN)\\d{3}$")) {
+//                System.out.println("Error: Invalid Item ID format. Please follow the specified Item ID format.");
+//            } else {
+//                isValidated = true;
+//            }
+//        }
+//        return input;
+//    } possible for searching
 
-        while (!isValidated) {
-            System.out.print("Item ID: ");
-            try {
-                input = sc.nextLine().trim().toUpperCase();
-            } catch (java.util.NoSuchElementException e) {
-                System.out.println("Error: No input available. Please try again.");
-                continue;
-            }
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Item ID cannot be empty.");
-            } else if (!input.matches("^(CL|EL|EN)\\d{3}$")) {
-                System.out.println("Error: Invalid Item ID format. Please follow the specified Item ID format.");
-            } else {
-                isValidated = true;
-            }
-        }
-        return input;
-    }
-
-    public static String validateItemName() {
+    public static String validateName() {
         boolean isValidated = false;
         String input = "";
 
@@ -82,7 +86,7 @@ public class DataValidations {
 
             if (input.isEmpty()) {
                 System.out.println("Error: Item Name cannot be empty.");
-            } else if (!input.matches("^[\\p{L}0-9 .,'#-]{2,50}$")) {
+            } else if (!input.matches("^[\\p{L}']+([\\- ]?[\\p{L}']+)*{2,50}$")) { //double check if appropriate
                 System.out.println("Error: Item Name must be 2-50 characters (letters, numbers, spaces, and . , ' - # allowed).");
             } else {
                 isValidated = true;
@@ -91,123 +95,63 @@ public class DataValidations {
         return input;
     }
 
-    public static double validatePrice() {
+    public static double validateWeight() {
         boolean isValidated = false;
         double value = 0;
 
         while (!isValidated) {
-            System.out.print("Price: ");
+            System.out.print("Weight: ");
             String input = sc.nextLine().trim();
 
-            if (!input.matches("(0|[1-9][0-9]*)(\\.[0-9]{1,2})?")) {
-                System.out.println("Error: Please enter a valid number (e.g., 350.25, 400.50).");
+            if (!input.matches("([1-9][0-9]*)(\\.[0-9]{1,2})?")) {
+                System.out.println("Error: Please enter a valid number (e.g., 25.20, 50.59).");
                 continue;
             }
 
             try {
                 value = Double.parseDouble(input);
                 if (value <= 0) {
-                    System.out.println("Error: Price must be higher than Php 0.");
-                } else if (value > MAX_PRICE) {
-                    System.out.printf("Error: Price must not exceed Php %,.2f.\n", MAX_PRICE);
+                    System.out.println("Error: Weight must be higher than 0kg.");
+                } else if (value > MAX_WEIGHT){
+                    System.out.printf("Error: Weight must not exceed %,.2fkg.\n", MAX_WEIGHT);
                 } else {
                     isValidated = true;
                 }
             } catch (NumberFormatException e) {
-                System.out.printf("Error: Please enter a valid number (e.g., 350, 400, 400.50) from 0.1-%,.2f.\n", MAX_PRICE);
+                System.out.printf("Error: Please enter a valid number (e.g., 25.20, 50.59) from 0.1kg-%,.2fkg.\n", MAX_WEIGHT);
             }
         }
         return value;
     }
 
-    public static int validateInt(String prompt) {
-        int value = 0;
-        boolean isValidated = false;
-
-        while (!isValidated) {
-            System.out.print(prompt + ": ");
-            String input = sc.nextLine().trim();
-
-            if (!input.matches("[1-9][0-9]*")) {
-                System.out.printf("Error: Please enter whole numbers only from 1-%,d.\n", MAX_QUANTITY);
-                continue;
-            }
-
-            try {
-                value = Integer.parseInt(input);
-                if (value <= 0) {
-                    System.out.printf("Error: %s must be greater than 0.\n", prompt);
-                } else if (value > MAX_QUANTITY) {
-                    System.out.printf("Error: %s must not exceed %,d.%n", prompt, MAX_QUANTITY);
-                } else {
-                    isValidated = true;
-                }
-            } catch (NumberFormatException e) {
-                System.out.printf("Error: Please enter a valid number from 1-%,d.\n", MAX_QUANTITY);
-            }
-        }
-        return value;
-    }
-
-    public static int validateIntForUpdate(String prompt) {
-        int value = 0;
-        boolean isValidated = false;
-
-        while (!isValidated) {
-            System.out.print(prompt + ": ");
-            String input = sc.nextLine().trim();
-
-            if (!input.matches("0|[1-9][0-9]*")) {
-                System.out.printf("Error: Please enter whole numbers only from 0-%,d.\n", MAX_QUANTITY);
-                continue;
-            }
-
-            try {
-                value = Integer.parseInt(input);
-                if (value < 0) {
-                    System.out.printf("Error: %s must be greater than or equal to 0.\n", prompt);
-                } else if (value > MAX_QUANTITY) {
-                    System.out.printf("Error: %s must not exceed %,d.%n", prompt, MAX_QUANTITY);
-                } else {
-                    isValidated = true;
-                }
-            } catch (NumberFormatException e) {
-                System.out.printf("Error: Please enter a valid number from 0-%,d.\n", MAX_QUANTITY);
-            }
-        }
-        return value;
-    }
-
-    public static String categoryValidation() {
-        boolean isValidated = false;
-        String input = "";
-
-        while (!isValidated) {
-            System.out.print("Category: ");
-            try {
-                input = sc.nextLine().trim();
-            } catch (java.util.NoSuchElementException e) {
-                System.out.println("Error: No input available. Please try again.");
-                continue;
-            }
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Category cannot be empty.");
-            } else if (input.equalsIgnoreCase("Clothing")) {
-                input = "Clothing";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Electronics")) {
-                input = "Electronics";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Entertainment")) {
-                input = "Entertainment";
-                isValidated = true;
-            } else {
-                System.out.println("Error: Category " + input + " does not exist!");
-            }
-        }
-        return input;
-    }
+//    public static int validateInt(String prompt) {
+//        int value = 0;
+//        boolean isValidated = false;
+//
+//        while (!isValidated) {
+//            System.out.print(prompt + ": ");
+//            String input = sc.nextLine().trim();
+//
+//            if (!input.matches("[1-9][0-9]*")) {
+//                System.out.printf("Error: Please enter whole numbers only from 1-%,d.\n", MAX_QUANTITY);
+//                continue;
+//            }
+//
+//            try {
+//                value = Integer.parseInt(input);
+//                if (value <= 0) {
+//                    System.out.printf("Error: %s must be greater than 0.\n", prompt);
+//                } else if (value > MAX_QUANTITY) {
+//                    System.out.printf("Error: %s must not exceed %,d.%n", prompt, MAX_QUANTITY);
+//                } else {
+//                    isValidated = true;
+//                }
+//            } catch (NumberFormatException e) {
+//                System.out.printf("Error: Please enter a valid number from 1-%,d.\n", MAX_QUANTITY);
+//            }
+//        }
+//        return value;
+//    }
 
     public static int intChoiceValidation(String prompt, int... choices) {
         int value = 0;
