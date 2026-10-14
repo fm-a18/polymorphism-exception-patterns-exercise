@@ -45,6 +45,7 @@ public abstract class Parcel {
     }
 
     public double getDeliveryFee() {
+        if (deliveryStrategy == null) throw new IllegalStateException("Delivery service not set");
         return deliveryStrategy.computeFee(getBaseFee());
     }
 
