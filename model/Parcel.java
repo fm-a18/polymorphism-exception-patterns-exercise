@@ -31,8 +31,11 @@ public abstract class Parcel {
     }
 
     protected abstract double getMaxWeight();
+
     public abstract double getChargeableWeight();
+
     public abstract double getBaseFee();
+
     public abstract String getParcelType();
 
     public void setDeliveryStrategy(DeliveryStrategy newStrategy) throws SameDayNotAllowedException {
@@ -41,33 +44,37 @@ public abstract class Parcel {
         this.deliveryStrategy = newStrategy;
     }
 
-    public double getDeliveryFee(){
+    public double getDeliveryFee() {
         return deliveryStrategy.computeFee(getBaseFee());
     }
 
     public void setStatusAsDelivered() throws AlreadyDeliveredException {
-        if (parcelStatus == ParcelStatus.DELIVERED){
+        if (parcelStatus == ParcelStatus.DELIVERED) {
             throw new AlreadyDeliveredException("Parcel has already been delivered.");
         }
         this.parcelStatus = ParcelStatus.DELIVERED;
     }
 
-    public String getTrackingNumber(){ return trackingNumber; }
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
 
-    public String getReceiverName(){
+    public String getReceiverName() {
         return receiverName;
     }
 
-    public double getWeight(){
+    public double getWeight() {
         return weight;
     }
 
-    public String getDeliveryStrategy(){
-        return deliveryStrategy.toString();
+    public strategy.DeliveryStrategy getDeliveryStrategy() {
+        return deliveryStrategy;
     }
 
-    public String getParcelStatus(){
-        return parcelStatus.toString();
+    public model.ParcelStatus getParcelStatus() {
+        return parcelStatus;
     }
+
+    public abstract String getAdditionalInfo();
 
 }

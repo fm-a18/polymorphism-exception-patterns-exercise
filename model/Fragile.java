@@ -7,7 +7,9 @@ public class Fragile extends Box {
 
     public Fragile(String trackingNumber, String receiverName, double weight, int length, int width, int height, String handlingNote) throws InvalidInputException {
         super(trackingNumber, receiverName, weight, length, width, height);
-        this.handlingNote = handlingNote;
+        if (handlingNote == null || handlingNote.trim().isEmpty())
+            throw new InvalidInputException("Handling note cannot be empty!");
+        this.handlingNote = handlingNote.trim();
     }
 
     public String getHandlingNote() {
@@ -20,12 +22,17 @@ public class Fragile extends Box {
     }
 
     @Override
-    public double getBaseFee(){
-        return super.getBaseFee()+100;
+    public double getBaseFee() {
+        return super.getBaseFee() + 100;
     }
 
     @Override
-    public String getParcelType(){
+    public String getParcelType() {
         return "Fragile";
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        return getHandlingNote();
     }
 }

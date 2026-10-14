@@ -23,10 +23,9 @@ public class DataValidations {
 
             if (input.isEmpty()) {
                 System.out.println("Error: Tracking Number cannot be empty.");
-            } else if (!input.matches("^ABC\\d{4}$")){
-                System.out.println("Error: Tracking Number must only contain alphanumeric"); //Fix, clarify if 3 alpha(a-z) or abc
-            }
-            else if (manager.keyExists(input)) {
+            } else if (!input.matches("^ABC\\d{4}$")) {
+                System.out.println("Error: Tracking Number must follow the format ABC followed by any 4 digits.");
+            } else if (manager.keyExists(input)) {
                 System.out.println("Error: Tracking Number already exists.");
             } else {
                 isValidated = true;
@@ -36,11 +35,10 @@ public class DataValidations {
     }
 
     public static String searchForTrackingNumber() {
-        boolean isValidated = false;
         String input = "";
 
-        while (!isValidated) {
-            System.out.print("Tracking Number: ");
+        while (input.isEmpty()) {
+            System.out.print("Tracking Number (e.g., ABC0001): ");
             try {
                 input = sc.nextLine().trim().toUpperCase();
             } catch (java.util.NoSuchElementException e) {
@@ -49,11 +47,7 @@ public class DataValidations {
             }
 
             if (input.isEmpty()) {
-                System.out.println("Error: Item ID cannot be empty.");
-            } else if (!input.matches("^(CL|EL|EN)\\d{3}$")) {
-                System.out.println("Error: Invalid Item ID format. Please follow the specified Item ID format.");
-            } else {
-                isValidated = true;
+                System.out.println("Error: Tracking Number cannot be empty.");
             }
         }
         return input;
@@ -73,11 +67,28 @@ public class DataValidations {
             }
 
             if (input.isEmpty()) {
-                System.out.println("Error: Item Name cannot be empty.");
-            } else if (!input.matches("^[\\p{L}][\\p{L} .'-]{0,49}$")) { //double check if appropriate
-                System.out.println("Error: Name must be up to 50 characters (letters, spaces, . ' - only).");
+                System.out.println("Error: Receiver Name cannot be empty.");
+            } else if (!input.matches("^\\p{L}[\\p{L} .'-]{0,49}$")) {
+                System.out.println("Error: Receiver Name must be up to 50 characters (letters, spaces, . ' - only).");
             } else {
                 isValidated = true;
+            }
+        }
+        return input;
+    }
+
+    public static String validateText(String prompt) {
+        String input = "";
+
+        while (input.isEmpty()) {
+            System.out.print(prompt + ": ");
+            input = sc.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.printf("Error: %s cannot be empty.%n", prompt);
+            } else if (input.length() > 100) {
+                System.out.printf("Error: %s must be 100 characters or fewer.%n", prompt);
+                input = "";
             }
         }
         return input;
@@ -100,7 +111,7 @@ public class DataValidations {
                 value = Double.parseDouble(input);
                 if (value <= 0) {
                     System.out.println("Error: Weight must be higher than 0kg.");
-                } else if (value > maxWeight){
+                } else if (value > maxWeight) {
                     System.out.printf("Error: Weight must not exceed %,.2fkg.\n", maxWeight);
                 } else {
                     isValidated = true;
@@ -112,7 +123,7 @@ public class DataValidations {
         return value;
     }
 
-    public static int validateInt(String prompt) {
+    public static int validateInt(String prompt, int min, int max) {
         int value = 0;
         boolean isValidated = false;
 
@@ -120,23 +131,20 @@ public class DataValidations {
             System.out.print(prompt + ": ");
             String input = sc.nextLine().trim();
 
-            int MAX_QUANTITY = 500;
-            if (!input.matches("[1-9][0-9]*")) {
-                System.out.printf("Error: Please enter whole numbers only from 1-%,d.\n", MAX_QUANTITY);
+            if (!input.matches("\\d+")) {
+                System.out.printf("Error: Please enter a whole number from %d to %d.%n", min, max);
                 continue;
             }
 
             try {
                 value = Integer.parseInt(input);
-                if (value <= 0) {
-                    System.out.printf("Error: %s must be greater than 0.\n", prompt);
-                } else if (value > MAX_QUANTITY) {
-                    System.out.printf("Error: %s must not exceed %,d.%n", prompt, MAX_QUANTITY);
+                if (value < min || value > max) {
+                    System.out.printf("Error: Please enter a whole number from %d to %d.%n", min, max);
                 } else {
                     isValidated = true;
                 }
             } catch (NumberFormatException e) {
-                System.out.printf("Error: Please enter a valid number from 1-%,d.\n", MAX_QUANTITY);
+                System.out.printf("Error: Please enter a whole number from %d to %d.%n", min, max);
             }
         }
         return value;
@@ -175,37 +183,6 @@ public class DataValidations {
         return value;
     }
 
-    public static char charChoiceValidation(String prompt, char... choices) {
-        boolean isValidated = false;
-        char input = ' ';
-        while (!isValidated) {
-            try {
-                System.out.print(prompt + ": ");
-                String line = sc.nextLine().trim().toUpperCase();
-                if (line.length() != 1) {
-                    printValidChoices(choices);
-                    continue;
-                }
-                input = line.charAt(0);
-                boolean found = false;
-                for (char choice : choices) {
-                    if (input == Character.toUpperCase(choice)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    isValidated = true;
-                } else {
-                    printValidChoices(choices);
-                }
-            } catch (Exception e) {
-                printValidChoices(choices);
-            }
-        }
-        return input;
-    }
-
     public static void printValidChoices(int... choices) { //int values
         System.out.print("Error: Please select only from (");
         for (int i = 0; i < choices.length; i++) {
@@ -217,15 +194,5 @@ public class DataValidations {
         System.out.println(").");
     }
 
-    public static void printValidChoices(char... choices) { //char values
-        System.out.print("Error: Please select only from (");
-        for (int i = 0; i < choices.length; i++) {
-            System.out.print(Character.toUpperCase(choices[i]));
-            if (i < choices.length - 1) {
-                System.out.print(", ");
-            }
-        }
-        System.out.println(").");
-    }
 
 }

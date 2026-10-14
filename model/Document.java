@@ -1,9 +1,8 @@
 package model;
 
 import exception.InvalidInputException;
-import strategy.DeliveryStrategy;
 
-public class Document extends Parcel{
+public class Document extends Parcel {
     private int numOfPages;
 
     public Document(String trackingNumber, String receiverName, double weight, int numOfPages)
@@ -11,6 +10,7 @@ public class Document extends Parcel{
         super(trackingNumber, receiverName, weight);
         setNumOfPages(numOfPages);
     }
+
     public int getNumOfPages() {
         return numOfPages;
     }
@@ -27,21 +27,22 @@ public class Document extends Parcel{
     }
 
     @Override
-    public double getChargeableWeight(){
+    public double getChargeableWeight() {
         return getWeight();
     }
 
     @Override
-    public double getBaseFee(){
+    public double getBaseFee() {
         return 50;
     }
 
     @Override
-    public String getParcelType(){
+    public String getParcelType() {
         return "Document";
     }
 
-
-
-
+    @Override
+    public String getAdditionalInfo() {
+        return getNumOfPages() + " pages";
+    }
 }

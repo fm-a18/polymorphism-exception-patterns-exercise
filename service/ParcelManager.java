@@ -12,7 +12,8 @@ public class ParcelManager {
     private static ParcelManager instance;
     private final Map<String, Parcel> parcels = new LinkedHashMap<>();
 
-    private ParcelManager(){}
+    private ParcelManager() {
+    }
 
     public static ParcelManager getInstance() {
         if (instance == null) {
@@ -21,12 +22,12 @@ public class ParcelManager {
         return instance;
     }
 
-    public boolean keyExists(String trackingNumber){
+    public boolean keyExists(String trackingNumber) {
         return parcels.containsKey(trackingNumber);
     }
 
     public void addParcel(Parcel parcel) throws DuplicateTrackingException {
-        if(keyExists(parcel.getTrackingNumber()))
+        if (keyExists(parcel.getTrackingNumber()))
             throw new DuplicateTrackingException("Tracking number already exists!");
         parcels.put(parcel.getTrackingNumber(), parcel);
     }
@@ -38,7 +39,7 @@ public class ParcelManager {
         return parcel;
     }
 
-    public Collection<Parcel> getAll(){
+    public Collection<Parcel> getAll() {
         return parcels.values();
     }
 }

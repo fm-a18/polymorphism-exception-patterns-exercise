@@ -1,9 +1,8 @@
 package model;
 
 import exception.InvalidInputException;
-import strategy.DeliveryStrategy;
 
-public class Box extends Parcel{
+public class Box extends Parcel {
     private final int length;
     private final int width;
     private final int height;
@@ -11,6 +10,8 @@ public class Box extends Parcel{
     public Box(String trackingNumber, String receiverName, double weight, int length, int width, int height)
             throws InvalidInputException {
         super(trackingNumber, receiverName, weight);
+        if (length <= 0 || width <= 0 || height <= 0)
+            throw new InvalidInputException("Length, width, and height must be greater than 0!");
         this.length = length;
         this.width = width;
         this.height = height;
@@ -38,17 +39,22 @@ public class Box extends Parcel{
     }
 
     @Override
-    public double getChargeableWeight(){
-        return Math.ceil(getVolumetricWeight());
+    public double getChargeableWeight() {
+        return Math.ceil(Math.max(getWeight(), getVolumetricWeight()));
     }
 
     @Override
-    public double getBaseFee(){
-        return 40*getChargeableWeight();
+    public double getBaseFee() {
+        return 40 * getChargeableWeight();
     }
 
     @Override
-    public String getParcelType(){
+    public String getParcelType() {
         return "Box";
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        return String.format("%d x %d x %dcm", getLength(), getWidth(), getHeight());
     }
 }

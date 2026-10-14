@@ -31,25 +31,44 @@ public class DisplayUtils {
 
     public static void displayTable(Collection<Parcel> parcels) {
         if (parcels.isEmpty()) {
-            System.out.println("No items found.");
+            System.out.println("No packages available!");
             System.out.println("-".repeat(TABLE_WIDTH));
             return;
         }
 
         for (Parcel parcel : parcels) {
+            String serviceName = parcel.getDeliveryStrategy() != null
+                    ? parcel.getDeliveryStrategy().getName()
+                    : "N/A";
+            String statusText = parcel.getParcelStatus().toString();
+            String chgWeightDisplay = String.format("%s kg",
+                    parcel.getParcelType().equalsIgnoreCase("Document")
+                            ? String.format("%.2f", parcel.getChargeableWeight())
+                            : String.format("%d", (int) Math.ceil(parcel.getChargeableWeight()))
+            );
+
             System.out.printf(
                     PARCEL_FORMAT,
                     parcel.getTrackingNumber(),
                     parcel.getParcelType(),
                     parcel.getReceiverName(),
-                    String.format("%d kg", (int) Math.ceil(parcel.getChargeableWeight())),
-                    parcel.getDeliveryStrategy().getName(),
+                    chgWeightDisplay,
+                    serviceName,
                     String.format("Php %,.2f", parcel.getDeliveryFee()),
-                    parcel.getParcelStatus()
+                    statusText
             );
 
             System.out.println("-".repeat(TABLE_WIDTH));
         }
+    }
+
+    public static void printMenu(String tableName, String... options) {
+        centeredTitle(tableName, MENU_WIDTH);
+
+        for (int i = 0; i < options.length; i++) {
+            System.out.printf(" [%d] %s%n", i + 1, options[i]);
+        }
+        System.out.println("=".repeat(MENU_WIDTH));
     }
 
     public static void printSummaryBox(String tableName, String[][] rows) {
@@ -65,21 +84,4 @@ public class DisplayUtils {
         System.out.println("=".repeat(MENU_WIDTH));
     }
 
-    public static void printMenu(String tableName, String... options) {
-        centeredTitle(tableName, MENU_WIDTH);
-
-        for (int i = 0; i < options.length; i++) {
-            System.out.printf(" [%d] %s%n", i + 1, options[i]);
-        }
-        System.out.println("=".repeat(MENU_WIDTH));
-    }
-
-    public static void printMenuInput(String tableName, String... options) {
-        centeredTitle(tableName, MENU_WIDTH);
-
-        for (String option : options) {
-            System.out.printf(" • %s%n", option);
-        }
-        System.out.println("=".repeat(MENU_WIDTH));
-    }
 }
