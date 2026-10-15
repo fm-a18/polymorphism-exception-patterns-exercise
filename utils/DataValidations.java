@@ -99,7 +99,7 @@ public class DataValidations {
         double value = 0;
 
         while (!isValidated) {
-            System.out.print("Weight (kg): ");
+            System.out.printf("Weight (Max: %.2fkg): ", maxWeight);
             String input = sc.nextLine().trim();
 
             if (!input.matches("\\d+(\\.\\d+)?")) {
