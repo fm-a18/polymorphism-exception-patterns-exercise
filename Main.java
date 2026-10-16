@@ -137,7 +137,7 @@ public class Main {
 
             DeliveryStrategy newStrategy = selectDeliveryStrategy();
             if (newStrategy.getName().equals(oldStrategy)) {
-                System.out.printf("Delivery Service is already %s. No changes have been made.", newStrategy.getName());
+                System.out.printf("Delivery Service is already %s. No changes have been made.\n", newStrategy.getName());
                 return;
             }
 
